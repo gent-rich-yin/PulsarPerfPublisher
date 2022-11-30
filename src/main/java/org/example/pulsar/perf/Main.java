@@ -51,7 +51,7 @@ public class Main {
                     || currentMessageSize == 0 || currentMessageSize != PerfStates.messageSize ) {
                 currentTopic = PerfStates.topic;
                 currentMessageSize = PerfStates.messageSize;
-                if( currentTopic != null && currentMessageSize > 0 ) {
+                if( currentTopic != null && currentTopic != ""  && currentMessageSize > 0 ) {
                     updatePerfMessage("Start generating random strings");
                     messages = generateRandomStrings();
                     sleep(1000);
