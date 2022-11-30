@@ -45,13 +45,12 @@ public class Main {
         long stime;
 
         messages = generateRandomStrings();
-        updatePerfMessage("Start publishing...");
         while(true) {
             if( currentTopic == null || !currentTopic.equals(PerfStates.topic)
                     || currentMessageSize == 0 || currentMessageSize != PerfStates.messageSize ) {
                 currentTopic = PerfStates.topic;
                 currentMessageSize = PerfStates.messageSize;
-                if( currentTopic != null && currentTopic != ""  && currentMessageSize > 0 ) {
+                if( currentTopic != null && !currentTopic.equals("") && currentMessageSize > 0 ) {
                     updatePerfMessage("Start generating random strings");
                     messages = generateRandomStrings();
                     sleep(1000);
@@ -62,7 +61,7 @@ public class Main {
                 }
             }
 
-            if( currentTopic == null || currentTopic == "" || currentMessageSize <= 0 ) {
+            if( currentTopic == null || currentTopic.equals("") || currentMessageSize <= 0 ) {
                 updatePerfMessage("Waiting for valid config assignment");
                 sleep(1000);
                 continue;
