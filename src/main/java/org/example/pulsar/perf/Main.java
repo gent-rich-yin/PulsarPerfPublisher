@@ -62,7 +62,7 @@ public class Main {
                 }
             }
 
-            if( currentTopic == null || currentMessageSize <= 0 ) {
+            if( currentTopic == null || currentTopic == "" || currentMessageSize <= 0 ) {
                 updatePerfMessage("Waiting for valid config assignment");
                 sleep(1000);
                 continue;
