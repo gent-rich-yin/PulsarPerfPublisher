@@ -1,9 +1,6 @@
 package org.example.pulsar.perf;
 
-import org.apache.pulsar.client.api.Producer;
-import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.api.PulsarClientException;
-import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +9,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 
+import java.sql.Array;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @SpringBootApplication
 public class Main {
@@ -75,19 +77,30 @@ public class Main {
                     .create();
             while( currentTopic.equals(PerfStates.topic)
                     && currentMessageSize == PerfStates.messageSize ) {
-                pulsarProducer.newMessage()
+                List<CompletableFuture<MessageId>> list = new ArrayList<>();
+                list.add(pulsarProducer.newMessage()
                         .key(Integer.toString(count++))
                         .value(messages[currentMessageIndex++])
-                        .sendAsync()
-                        .get();
+                        .sendAsync());
                 if( currentMessageIndex >= NUM_OF_MESSAGES ) {
                     currentMessageIndex = 0;
                 }
                 messagesSentLastSecond++;
                 long ftime = System.currentTimeMillis();
                 if( ftime - stime > 1000 ) {
-                    updatePerfMessage("messagesSentLastSecond: {0}", messagesSentLastSecond);
-                    stime = ftime;
+                    long sentTime = ftime - stime;
+                    list.forEach(f -> {
+                        try {
+                            f.get();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        } catch (ExecutionException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    long flushTime = System.currentTimeMillis() - ftime;
+                    updatePerfMessage("messagesSentLastSecond: {0}, sentTime: {1}, flushTime: {2}", messagesSentLastSecond, sentTime, flushTime);
+                    stime = System.currentTimeMillis();
                     messagesSentLastSecond = 0;
                 }
             }
