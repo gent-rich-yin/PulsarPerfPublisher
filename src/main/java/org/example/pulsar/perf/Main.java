@@ -81,11 +81,11 @@ public class Main {
                     .create();
             while( currentTopic.equals(PerfStates.topic)
                     && currentMessageSize == PerfStates.messageSize ) {
-                List<CompletableFuture<MessageId>> list = new ArrayList<>();
-                list.add(pulsarProducer.newMessage()
+//                List<CompletableFuture<MessageId>> list = new ArrayList<>();
+                pulsarProducer.newMessage()
                         .key(Integer.toString(count++))
                         .value(messages[currentMessageIndex++])
-                        .sendAsync());
+                        .sendAsync();
                 if( currentMessageIndex >= NUM_OF_MESSAGES ) {
                     currentMessageIndex = 0;
                 }
@@ -93,17 +93,17 @@ public class Main {
                 long ftime = System.currentTimeMillis();
                 if( ftime - stime > 1000 ) {
                     long sentTime = ftime - stime;
-                    list.forEach(f -> {
-                        try {
-                            f.get();
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        } catch (ExecutionException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                    long flushTime = System.currentTimeMillis() - ftime;
-                    updatePerfMessage("messagesSentLastSecond: {0}, sentTime: {1}, flushTime: {2}", messagesSentLastSecond, sentTime, flushTime);
+//                    list.forEach(f -> {
+//                        try {
+//                            f.get();
+//                        } catch (InterruptedException e) {
+//                            throw new RuntimeException(e);
+//                        } catch (ExecutionException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                    });
+//                    long flushTime = System.currentTimeMillis() - ftime;
+                    updatePerfMessage("messagesSentLastSecond: {0}, sentTime: {1}", messagesSentLastSecond, sentTime);
                     stime = System.currentTimeMillis();
                     messagesSentLastSecond = 0;
                 }
