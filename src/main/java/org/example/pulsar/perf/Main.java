@@ -37,7 +37,7 @@ public class Main {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void startPublishing() throws PulsarClientException {
+    public void startPublishing() throws Exception {
         initClient();
 
         String currentTopic = null;
@@ -78,7 +78,8 @@ public class Main {
                 pulsarProducer.newMessage()
                         .key(Integer.toString(count++))
                         .value(messages[currentMessageIndex++])
-                        .sendAsync();
+                        .sendAsync()
+                        .get();
                 if( currentMessageIndex >= NUM_OF_MESSAGES ) {
                     currentMessageIndex = 0;
                 }
