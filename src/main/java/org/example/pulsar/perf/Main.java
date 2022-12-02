@@ -76,8 +76,8 @@ public class Main {
                     .topic(PerfStates.topic)
                     .enableBatching(true)
                     .blockIfQueueFull(true)
-                    .batchingMaxMessages(10000)
-                    .batchingMaxBytes(10000000)
+                    .batchingMaxMessages(1000)
+                    .batchingMaxBytes(1000000)
                     .create();
             while( currentTopic.equals(PerfStates.topic)
                     && currentMessageSize == PerfStates.messageSize ) {
