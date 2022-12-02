@@ -78,7 +78,7 @@ public class Main {
                 pulsarProducer.newMessage()
                         .key(Integer.toString(count++))
                         .value(messages[currentMessageIndex++])
-                        .send();
+                        .sendAsync();
                 if( currentMessageIndex >= NUM_OF_MESSAGES ) {
                     currentMessageIndex = 0;
                 }
