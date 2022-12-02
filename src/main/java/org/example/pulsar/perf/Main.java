@@ -74,6 +74,10 @@ public class Main {
             int messagesSentLastSecond = 0;
             pulsarProducer = pulsarClient.newProducer(Schema.STRING)
                     .topic(PerfStates.topic)
+                    .enableBatching(true)
+                    .blockIfQueueFull(true)
+                    .batchingMaxMessages(10000)
+                    .batchingMaxBytes(10000000)
                     .create();
             while( currentTopic.equals(PerfStates.topic)
                     && currentMessageSize == PerfStates.messageSize ) {
